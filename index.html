@@ -1,0 +1,414 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioQuest: Ladder &amp; Mutation — Grade 8 Biotechnology</title>
+
+  <!--
+    ===========================================================================
+    GITHUB PAGES & TREBEDIT DEPLOYMENT GUIDE (BioQuest: Ladder & Mutation)
+    ===========================================================================
+    1. Save this single file as `index.html` inside your GitHub repository root.
+    2. In TrebEdit (Android):
+       - Open or create your project folder and save as `index.html`.
+       - Tap Preview to test on your phone with touch or mouse.
+    3. To host on GitHub Pages:
+       - Upload `index.html` to your GitHub repo (`main` branch).
+       - Go to Settings -> Pages -> Source: Deploy from a branch -> `main` & `/ (root)`.
+       - Open https://<your-username>.github.io/<your-repo-name>/
+    ===========================================================================
+  -->
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Fredoka', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Fredoka', 'Inter', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Playful yet legible display + body font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Creative Biotech Aesthetic, Animations & Tactile Controls */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-creative {
+      font-family: 'Fredoka', 'Inter', sans-serif;
+    }
+
+    @keyframes diceTumble {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-16deg) scale(1.14); }
+      50% { transform: rotate(16deg) scale(1.18); }
+      75% { transform: rotate(-10deg) scale(1.08); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -28; }
+    }
+
+    .dice-rolling {
+      animation: diceTumble 0.45s ease-in-out infinite;
+    }
+
+    .token-active {
+      animation: floatBadge 1.5s ease-in-out infinite;
+    }
+
+    .modal-pop {
+      animation: popIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .hazard-dash {
+      animation: dashFlow 1.4s linear infinite;
+    }
+
+    /* Subtle lab dot-grid background texture */
+    .lab-bg-pattern {
+      background-image: radial-gradient(rgba(13, 148, 136, 0.14) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+    .dark .lab-bg-pattern {
+      background-image: radial-gradient(rgba(45, 212, 191, 0.1) 1px, transparent 1px);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.45);
+      border-radius: 9999px;
+    }
+
+    /* Tactile 3D-style game buttons */
+    .btn-3d-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+      box-shadow: 0 5px 0 #065f46, 0 10px 20px rgba(13, 148, 136, 0.3);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
+    }
+    .btn-3d-emerald:hover:not(:disabled) {
+      filter: brightness(1.06);
+    }
+    .btn-3d-emerald:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #065f46, 0 3px 8px rgba(13, 148, 136, 0.2);
+    }
+    .btn-3d-emerald:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: 0 2px 0 #065f46;
+    }
+
+    .btn-3d-violet {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      box-shadow: 0 4px 0 #3730a3, 0 8px 16px rgba(99, 102, 241, 0.25);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .btn-3d-violet:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #3730a3;
+    }
+  </style>
+</head>
+<body class="min-h-screen lab-bg-pattern bg-gradient-to-br from-cyan-50/90 via-slate-50 to-emerald-50/90 text-slate-800 dark:from-slate-950 dark:via-slate-950 dark:to-teal-950/40 dark:text-slate-100 transition-colors duration-200">
+  <!-- Main Application Shell -->
+  <div id="app" class="min-h-screen flex flex-col max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-5 gap-3 sm:gap-4">
+
+    <!-- Top Creative Header -->
+    <header class="bg-white/95 dark:bg-slate-900/95 border-2 border-teal-500/20 dark:border-teal-400/20 rounded-3xl p-3 sm:p-4 shadow-md flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-600 text-white flex items-center justify-center shrink-0 shadow-md" aria-hidden="true">
+          <!-- Custom DNA Helix & Flask SVG -->
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5c4 0 4 6 8 6s4-6 8-6" />
+            <path d="M4 19c4 0 4-6 8-6s4 6 8 6" />
+            <path d="M7 7v10" />
+            <path d="M12 11v2" />
+            <path d="M17 7v10" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="font-creative text-lg sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-teal-700 via-emerald-600 to-indigo-600 dark:from-teal-300 dark:via-emerald-300 dark:to-indigo-300 bg-clip-text text-transparent truncate">
+              BioQuest: Ladder &amp; Mutation
+            </h1>
+            <span class="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-300/80 text-amber-950 dark:bg-amber-400/20 dark:text-amber-300 border border-amber-400/50">
+              Grade 8 Creative
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">
+            Lab Apparatuses &bull; DNA Replication &bull; Transcription &amp; Translation
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button
+          id="btnOpenGuide"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-indigo-100 text-indigo-800 hover:bg-indigo-200 dark:bg-indigo-950/80 dark:text-indigo-200 dark:hover:bg-indigo-900/80 border border-indigo-300/70 dark:border-indigo-700 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          <span>Field Notes</span>
+        </button>
+
+        <button
+          id="btnToggleSound"
+          type="button"
+          class="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+          title="Toggle Sound Effects"
+          aria-label="Toggle Sound Effects"
+          aria-pressed="true"
+        >
+          <span id="soundIconWrap"></span>
+        </button>
+
+        <button
+          id="btnToggleTheme"
+          type="button"
+          class="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+          title="Toggle Light/Dark Mode"
+          aria-label="Toggle Light or Dark Mode"
+        >
+          <span id="themeIconWrap"></span>
+        </button>
+
+        <button
+          id="btnOpenSetup"
+          type="button"
+          class="btn-3d-violet px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold text-white cursor-pointer"
+        >
+          Players / New
+        </button>
+      </div>
+    </header>
+
+    <!-- Turn Announcement & Multiplayer Quick Bar -->
+    <section class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:px-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <div id="turnBannerPill" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl font-extrabold text-xs sm:text-sm bg-cyan-100 text-cyan-900 dark:bg-cyan-950 dark:text-cyan-200 border border-cyan-300/70 dark:border-cyan-800">
+          <span id="turnColorDot" class="w-3 h-3 rounded-full bg-cyan-600"></span>
+          <span id="turnBannerText">Player 1's Turn</span>
+        </div>
+        <span id="modeBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          1P vs. Lab Bot
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between sm:justify-end gap-2.5 text-xs sm:text-sm">
+        <div id="streakPill" class="hidden items-center gap-1 px-3 py-1 rounded-full font-extrabold text-xs bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300/70">
+          <span>🔥</span>
+          <span id="streakCountText">0 Streak</span>
+        </div>
+        <div class="text-xs font-bold text-slate-700 dark:text-slate-200 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-2xl">
+          Lab Points: <span id="scoreDisplay" class="font-extrabold text-emerald-600 dark:text-emerald-400">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Gameplay Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start flex-1">
+
+      <!-- Left: Snakes & Ladders Board (7 cols on desktop) -->
+      <section class="lg:col-span-7 bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-md flex flex-col gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+              <span>Biotech Ladder (Climb!)</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+              <span>Mutation Slide (Watch Out!)</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+              <span>Bio Quiz (?)</span>
+            </span>
+          </div>
+          <span class="text-teal-700 dark:text-teal-300 font-extrabold">Target: Tile 36</span>
+        </div>
+
+        <!-- 6x6 Responsive Board + SVG Ladders/Mutation Snakes + Tokens -->
+        <div id="boardWrapper" class="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-teal-500/30 dark:border-teal-400/25 bg-slate-100 dark:bg-slate-800 select-none shadow-inner">
+          <div id="boardGrid" class="grid grid-cols-6 grid-rows-6 w-full h-full"></div>
+          <svg
+            id="boardSvg"
+            viewBox="0 0 600 600"
+            class="absolute inset-0 w-full h-full pointer-events-none z-10"
+            aria-hidden="true"
+          ></svg>
+          <div id="tokensLayer" class="absolute inset-0 w-full h-full pointer-events-none z-20"></div>
+        </div>
+
+        <!-- Ladders & Mutation Chutes Legend -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+          <div class="p-3 rounded-2xl bg-emerald-50/90 dark:bg-emerald-950/35 border border-emerald-200 dark:border-emerald-800/70">
+            <div class="font-creative font-bold text-sm text-emerald-800 dark:text-emerald-300 mb-1">
+              🧬 Biotech Boost Ladders
+            </div>
+            <ul id="ladderList" class="space-y-1 text-emerald-950/85 dark:text-emerald-200/85"></ul>
+          </div>
+          <div class="p-3 rounded-2xl bg-rose-50/90 dark:bg-rose-950/35 border border-rose-200 dark:border-rose-800/70">
+            <div class="font-creative font-bold text-sm text-rose-800 dark:text-rose-300 mb-1">
+              ⚠️ Lab &amp; Mutation Slides
+            </div>
+            <ul id="snakeList" class="space-y-1 text-rose-950/85 dark:text-rose-200/85"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Dice Control, Roster & Lab Log (5 cols on desktop) -->
+      <aside class="lg:col-span-5 flex flex-col gap-4">
+
+        <!-- Dice Roller Card -->
+        <div class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-md flex flex-col items-center text-center gap-3.5">
+          <div class="w-full flex items-center justify-between">
+            <span class="font-creative text-xs font-bold uppercase tracking-wider text-slate-400">Bio-Dice</span>
+            <span id="rollSubStatus" class="text-xs font-semibold text-teal-600 dark:text-teal-400">No rush • Take your time</span>
+          </div>
+
+          <div class="flex items-center justify-center gap-4 my-0.5">
+            <div
+              id="diceBox"
+              class="w-20 h-20 rounded-3xl bg-gradient-to-br from-white via-teal-50 to-cyan-100 dark:from-slate-800 dark:to-slate-900 border-2 border-teal-400/60 dark:border-teal-500/40 shadow-md flex items-center justify-center cursor-pointer"
+              aria-live="polite"
+              aria-label="Dice result"
+            >
+              <span id="diceValue" class="font-creative text-4xl font-bold text-teal-700 dark:text-teal-300">1</span>
+            </div>
+
+            <div class="text-left max-w-[205px]">
+              <p id="statusMessage" class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 leading-snug">
+                Welcome to BioQuest! Roll the dice to start your Grade 8 Biotech journey.
+              </p>
+            </div>
+          </div>
+
+          <button
+            id="btnRollDice"
+            type="button"
+            class="btn-3d-emerald w-full py-3.5 px-5 rounded-2xl text-white font-creative font-bold text-base sm:text-lg tracking-wide flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
+              <circle cx="8" cy="8" r="1.3" fill="currentColor" />
+              <circle cx="16" cy="8" r="1.3" fill="currentColor" />
+              <circle cx="12" cy="12" r="1.3" fill="currentColor" />
+              <circle cx="8" cy="16" r="1.3" fill="currentColor" />
+              <circle cx="16" cy="16" r="1.3" fill="currentColor" />
+            </svg>
+            <span id="rollBtnText">Roll Bio-Dice</span>
+          </button>
+        </div>
+
+        <!-- Players Roster Card -->
+        <div class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-md space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h2 class="font-creative text-xs font-bold uppercase tracking-wider text-slate-400">Lab Crew Roster</h2>
+            <button
+              id="btnQuickCustomize"
+              type="button"
+              class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+            >
+              Edit Players
+            </button>
+          </div>
+          <div id="playersContainer" class="space-y-2"></div>
+        </div>
+
+        <!-- Lab Log Card -->
+        <div class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-md flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <h2 class="font-creative text-xs font-bold uppercase tracking-wider text-slate-400">Experiment Log</h2>
+            <button
+              id="btnClearLog"
+              type="button"
+              class="text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
+            >
+              Clear
+            </button>
+          </div>
+          <div id="logList" class="h-36 overflow-y-auto custom-scroll space-y-1.5 text-xs pr-1"></div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs text-slate-600 dark:text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div>
+        <strong class="text-slate-800 dark:text-slate-200">BioQuest: Ladder &amp; Mutation</strong> &bull; Grade 8 Biotechnology Creative Work (TrebEdit &amp; GitHub Pages ready).
+      </div>
+      <button id="btnFooterGuide" type="button" class="font-bold text-teal-700 dark:text-teal-300 hover:underline cursor-pointer text-left sm:text-right">
+        Open Grade 8 Field Notes
+      </button>
+    </footer>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL 1: STATIC GRADE 8 QUIZ CHALLENGE (ZERO TIMERS)                    -->
+  <!-- ======================================================================= -->
+  <div
+    id="quizModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-5 bg-slate-950/75 backdrop-blur-xs"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="quizModalTitle"
+  >
+    <div class="modal-pop bg-white dark:bg-slate-900 border-2 border-teal-400/40 dark:border-teal-500/30 rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto custom-scroll">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span id="quizTopicBadge" class="inline-block text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/70 dark:text-indigo-200">
+              Topic
+            </span>
+            <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200">
+              No Timer • Read at Your Pace
+            </span>
+          </div>
+          <h3 id="quizModalTitle" class="font-creative text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug">
+            Biotech Challenge!
+          </h3>
+          <p id="quizContextNote" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5"></p>
+        </div>
+        <span class="text-xs font-extrabold px-2.5 py-1 rounded-xl bg-amber-200/90 text-amber-950 dark:bg-amber-400/20 dark:text-amber-300 shrink-0">
+          +15 pts
+        </span>
+      </div>
+
+      <!-- Optional Custom SVG Visual for Portable Apparatus Identification (1C) -->
+      <div id="quizVisualBox" class="hidden p-3 rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-slate-800 dark:to-slate-800/70 border border-teal-20
